@@ -174,10 +174,11 @@ public class MainActivity extends AppCompatActivity {
                     seekBar.setMax(songDuration);
                     songDurationTextView.setText(String.valueOf(songDuration/60)+":"+String.valueOf(songDuration%60));
                     seekBar.setVisibility(View.VISIBLE);
+                    isSongPlaying = true;
                     new Thread(){
                         public void run(){
                             songPosition = 0;
-                            while(songPosition < songDuration){
+                            while(isSongPlaying && songPosition < songDuration){//probably could be done more elegant
                                 try {
                                     Thread.sleep(1000);
                                 } catch (InterruptedException e) {
