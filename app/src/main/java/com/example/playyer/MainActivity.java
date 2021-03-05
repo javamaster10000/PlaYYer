@@ -178,20 +178,22 @@ public class MainActivity extends AppCompatActivity {
                     new Thread(){
                         public void run(){
                             songPosition = 0;
-                            while(isSongPlaying && songPosition < songDuration){//probably could be done more elegant
+                            while(songPosition < songDuration) {//probably could be done more elegant
                                 try {
                                     Thread.sleep(1000);
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
-                                songPosition++;
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        seekBar.setProgress(songPosition);
-                                        songPositionTextView.setText(String.valueOf(songPosition/60)+":"+String.valueOf(songPosition%60));
-                                    }
-                                });
+                                if (isSongPlaying) {
+                                    songPosition++;
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            seekBar.setProgress(songPosition);
+                                            songPositionTextView.setText(String.valueOf(songPosition / 60) + ":" + String.valueOf(songPosition % 60));
+                                        }
+                                    });
+                                }
                             }
                             mp.pause();
                         }
