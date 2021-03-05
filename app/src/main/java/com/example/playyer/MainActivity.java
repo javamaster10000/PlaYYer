@@ -140,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
                     mp.seekTo(songProgress);
+                    songPosition = songProgress;
                 }
             });
             final TextView songPositionTextView = findViewById(R.id.currentPosition);
@@ -148,9 +149,9 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     final String musicFilePath = musicFilesList.get(position);
-                    final int songDuration = playMusicFile(musicFilePath);
+                    final int songDuration = playMusicFile(musicFilePath) / 1000;
                     seekBar.setMax(songDuration);
-                    songDurationTextView.setText(String.valueOf(songDuration/1000));
+                    songDurationTextView.setText(String.valueOf(songDuration/60)+":"+String.valueOf(songDuration%60));
                     seekBar.setVisibility(View.VISIBLE);
                     new Thread(){
                         public void run(){
@@ -161,12 +162,12 @@ public class MainActivity extends AppCompatActivity {
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
-                                songPosition+=1000;
+                                songPosition++;
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         seekBar.setProgress(songPosition);
-                                        songPositionTextView.setText(String.valueOf(songPosition/1000));
+                                        songPositionTextView.setText(String.valueOf(songPosition/60)+":"+String.valueOf(songPosition%60));
                                     }
                                 });
                             }
