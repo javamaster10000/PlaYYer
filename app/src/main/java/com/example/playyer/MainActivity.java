@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -108,6 +109,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private int songPosition;
+
+    private boolean isSongPlaying = false;
+
     @Override
     protected void onResume(){
         super.onResume();
@@ -145,6 +149,23 @@ public class MainActivity extends AppCompatActivity {
             });
             final TextView songPositionTextView = findViewById(R.id.currentPosition);
             final TextView songDurationTextView = findViewById(R.id.songDuration);
+
+            final Button pauseButton = findViewById(R.id.pauseButton);
+            pauseButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(isSongPlaying){
+                        mp.pause();
+                        pauseButton.setText("Play");
+                    }
+                    else{
+                        mp.start();
+                        pauseButton.setText("Pause");
+                    }
+                    isSongPlaying = !isSongPlaying;
+                }
+            });
+
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -171,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 });
                             }
+                            mp.pause();
                         }
                     }.start();
 
