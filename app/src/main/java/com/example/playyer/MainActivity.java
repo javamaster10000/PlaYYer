@@ -20,6 +20,8 @@ import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -105,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         return mp.getDuration();
     }
 
-
+    private int songPosition;
     @Override
     protected void onResume(){
         super.onResume();
@@ -140,19 +142,36 @@ public class MainActivity extends AppCompatActivity {
                     mp.seekTo(songProgress);
                 }
             });
+            final TextView songPositionTextView = findViewById(R.id.currentPosition);
+            final TextView songDurationTextView = findViewById(R.id.songDuration);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     final String musicFilePath = musicFilesList.get(position);
                     final int songDuration = playMusicFile(musicFilePath);
                     seekBar.setMax(songDuration);
+                    songDurationTextView.setText(String.valueOf(songDuration/1000));
                     seekBar.setVisibility(View.VISIBLE);
-                    int songPosition = 0;
-
-                    while(songPosition < songDuration){
-                        songPosition++;
-                        seekBar.setProgress(songPosition);
-                    }
+                    new Thread(){
+                        public void run(){
+                            songPosition = 0;
+                            while(songPosition < songDuration){
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                songPosition+=1000;
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        seekBar.setProgress(songPosition);
+                                        songPositionTextView.setText(String.valueOf(songPosition/1000));
+                                    }
+                                });
+                            }
+                        }
+                    }.start();
 
                 }
             });
