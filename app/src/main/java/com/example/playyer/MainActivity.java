@@ -78,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
         }
         final File[] files = musicDir.listFiles();
         for (File file : files){
-
             final String path = file.getAbsolutePath();
             if (path.endsWith(".mp3")){
                 musicFilesList.add(path);
@@ -151,6 +150,9 @@ public class MainActivity extends AppCompatActivity {
             final TextView songDurationTextView = findViewById(R.id.songDuration);
 
             final Button pauseButton = findViewById(R.id.pauseButton);
+
+            final View playbackControls = findViewById(R.id.blaybackButtons);
+
             pauseButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -174,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
                     seekBar.setMax(songDuration);
                     songDurationTextView.setText(String.valueOf(songDuration/60)+":"+String.valueOf(songDuration%60));
                     seekBar.setVisibility(View.VISIBLE);
+                    playbackControls.setVisibility(View.VISIBLE);
                     isSongPlaying = true;
                     new Thread(){
                         public void run(){
@@ -196,6 +199,11 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                             mp.pause();
+                            songPosition = 0;
+                            songPositionTextView.setText("0");
+                            pauseButton.setText("Play");
+                            isSongPlaying = false;
+                            seekBar.setProgress(0);
                         }
                     }.start();
 
